@@ -1,0 +1,28 @@
+version: '3'
+services:
+  db:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - '3306:3306'
+  adminer:
+    image: adminer
+    ports:
+      - '8081:8080'
+  php:
+    build: ./docker/php-fpm
+    ports:
+      - "9000:9001"
+    volumes:
+      - ./:/var/www/symfony:cached
+    depends_on:
+      - db
+  nginx:
+    build: ./docker/nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - php
+    volumes:
+      - ./:/var/www/symfony:cached

@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    List of redirection for {{ domain }}
+{% endblock %}
+
+{% block body %}
+    <p><a href="{{ url('app_app_me') }}">Back to list of domain</a></p>
+    <table id="email-redirection-list" style="display: none">
+        <thead>
+            <tr><td>From</td><td>to</td><td>delete</td></tr>
+        </thead>
+        <tbody id="email-redirection-list-body">
+        </tbody>
+    </table>
+    <div id="loader">Loading</div>
+    <p><a href="{{ url('app_app_createemailredirection', {'domain': domain}) }}">Create new redirection</a></p>
+    <div>
+        <form style="display: none" id="email-redirection-delete" action="{{ url('app_api_deleteemailredirection', { 'domain': domain, 'redirectionId': '#REDIRECTIONID#' }) }}" method="post">
+            <input type="hidden" name="token" value="{{ csrf_token('delete-email-redirection') }}"/>
+            <button disabled="" type="submit">select element in list</button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        let domain = "{{ domain }}";
+        let emailRedirection = [];
+        fetch("/api/email/"+domain+"/redirections")
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('email-redirection-list').style.display = 'block';
+                document.getElementById('loader').style.display = 'none';
+                for (let redirectionId of data) {
+                    addLine(domain, redirectionId);
+                }
+            });
+
+        function addLine(domain, redirectionId) {
+            let refTable = document.getElementById('email-redirection-list-body');
+
+            fetch("/api/email/"+domain+"/redirection/"+redirectionId)
+                .then(response => response.json())
+                .then(data => {
+                    let linkToDelete = document.createElement('a');
+                    linkToDelete.href = '#';
+                    linkToDelete.setAttribute('attr-href', "/api/email/"+domain+"/redirection/"+redirectionId);
+                    linkToDelete.setAttribute('attr-text', `Delete redirection from ${data.from} to ${data.to}. Confirm?`);
+                    linkToDelete.innerHTML = 'Delete';
+                    linkToDelete.onclick = function () {
+                        let form = document.getElementById('email-redirection-delete');
+                        form.style.display = 'block';
+                        form.action = linkToDelete.getAttribute('attr-href');
+                        let submitButton = form.getElementsByTagName('button')[0];
+                        submitButton.innerHTML = linkToDelete.getAttribute('attr-text');
+                        submitButton.disabled = false;
+                    };
+
+                    let line = refTable.insertRow();
+                    line.insertCell(0).appendChild(document.createTextNode(data.from));
+                    line.insertCell(1).appendChild(document.createTextNode(data.to));
+                    line.insertCell(2).appendChild(linkToDelete);
+                });
+        }
+    </script>
+{% endblock %}
+
+
+

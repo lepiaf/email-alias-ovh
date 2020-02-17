@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+Welcome {{ firstName }}
+{% endblock %}
+
+{% block body %}
+    <h1>Welcome {{ firstName }}</h1>
+    <p>Domain available <ul id="domains"></ul></p>
+    <p><a href="/logout">Logout</a></p>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        fetch("/api/domains")
+            .then(response => response.json())
+            .then(data => {
+                let list = document.getElementById('domains');
+                for (let domain of data) {
+                    let listElement = document.createElement('li');
+                    let link = document.createElement('a');
+                    link.href = `/email/${domain}/redirections`;
+                    link.innerHTML = domain;
+                    listElement.append(link);
+                    list.append(listElement);
+                }
+            });
+    </script>
+{% endblock %}
+
