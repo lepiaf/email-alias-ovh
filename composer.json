@@ -15,7 +15,8 @@
         "symfony/security-csrf": "5.0.*",
         "symfony/serializer": "5.0.*",
         "symfony/twig-pack": "^1.0",
-        "symfony/yaml": "5.0.*"
+        "symfony/yaml": "5.0.*",
+        "web-auth/webauthn-lib": "^3.1"
     },
     "require-dev": {
         "symfony/profiler-pack": "^1.0"
