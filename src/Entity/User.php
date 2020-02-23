@@ -2,46 +2,53 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Webauthn\PublicKeyCredentialUserEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
-class User implements UserInterface
+class User extends PublicKeyCredentialUserEntity implements UserInterface
 {
     /**
      * @ORM\Id
-     * @ORM\Column(type="uuid_binary_ordered_time", unique=true)
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
+     * @ORM\Column(type="uuid", unique=true)
      */
-    private UuidInterface $id;
-
-    /**
-     * @ORM\Column(type="string", length=180, unique=true)
-     */
-    private string $username;
+    protected $id;
 
     /**
      * @ORM\Column(type="json")
      */
-    private $roles = [];
+    private $roles;
 
-    public function getId(): ?UuidInterface
+    /**
+     * @var PublicKeyCredentialSource[]
+     * @ORM\ManyToMany(targetEntity="App\Entity\PublicKeyCredentialSource")
+     * @ORM\JoinTable(name="users_user_handles",
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="user_handle", referencedColumnName="id", unique=true)}
+     *      )
+     */
+    protected $publicKeyCredentialSources;
+
+    public function __construct(string $id, string $name, string $displayName, array $roles)
+    {
+        parent::__construct($name, $id, $displayName);
+        $this->roles = $roles;
+        $this->publicKeyCredentialSources = new ArrayCollection();
+    }
+
+    public function getId(): string
     {
         return $this->id;
     }
 
     public function getUsername(): string
     {
-        return (string) $this->username;
-    }
-
-    public function setUsername(string $username): void
-    {
-        $this->username = $username;
+        return (string) $this->name;
     }
 
     public function getRoles(): array
@@ -68,5 +75,23 @@ class User implements UserInterface
 
     public function eraseCredentials(): void
     {
+    }
+
+    /**
+     * @return PublicKeyCredentialSource[]
+     */
+    public function getPublicKeyCredentialSources(): array
+    {
+        return $this->publicKeyCredentialSources->getValues();
+    }
+
+    public function addPublicKeyCredentialSources(PublicKeyCredentialSource $publicKeyCredentialSource)
+    {
+        $this->publicKeyCredentialSources->add($publicKeyCredentialSource);
+    }
+
+    public function removePublicKeyCredentialSources(PublicKeyCredentialSource $publicKeyCredentialSource)
+    {
+        $this->publicKeyCredentialSources->remove($publicKeyCredentialSource);
     }
 }

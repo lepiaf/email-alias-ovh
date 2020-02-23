@@ -111,6 +111,9 @@
     "league/uri-interfaces": {
         "version": "2.1.0"
     },
+    "nikic/php-parser": {
+        "version": "v4.3.0"
+    },
     "ocramius/package-versions": {
         "version": "1.5.1"
     },
@@ -176,6 +179,9 @@
     },
     "spomky-labs/base64url": {
         "version": "v2.0.1"
+    },
+    "spomky-labs/cbor-bundle": {
+        "version": "v2.0.2"
     },
     "spomky-labs/cbor-php": {
         "version": "v1.0.8"
@@ -272,6 +278,15 @@
     },
     "symfony/intl": {
         "version": "v5.0.4"
+    },
+    "symfony/maker-bundle": {
+        "version": "1.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.0",
+            "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
+        }
     },
     "symfony/mime": {
         "version": "v5.0.4"
@@ -407,6 +422,15 @@
     },
     "web-auth/webauthn-lib": {
         "version": "v3.1.1"
+    },
+    "web-auth/webauthn-symfony-bundle": {
+        "version": "v3.1.1"
+    },
+    "web-token/jwt-core": {
+        "version": "v2.1.5"
+    },
+    "web-token/jwt-signature": {
+        "version": "v2.1.5"
     },
     "webimpress/safe-writer": {
         "version": "2.0.0"

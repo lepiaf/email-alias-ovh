@@ -1,12 +1,7 @@
 {% extends 'base.html.twig' %}
 {% block javascripts %}
 <script>
-const publicKey = {
-        "allowCredentials":[],
-            "challenge":"6EHTElJ+pPTNccN89lFpBL12hdnx4h2fUamvf6uYmK4=",
-            "rpId":"demo.yubico.com",
-            "timeout":90000,
-            "userVerification":"preferred", "user": "feewfwefwef"};
+let publicKey = {{ publicKeyCredential | json_encode() | raw }};
 
 function arrayToBase64String(a) {
     return btoa(String.fromCharCode(...a));

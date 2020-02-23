@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Ramsey\Uuid\Uuid;
+use Webauthn\PublicKeyCredentialUserEntity;
 
 /**
  * @method User|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,32 +21,32 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
-    // /**
-    //  * @return User[] Returns an array of User objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findOneByUsername(string $username): ?User
     {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('u.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $qb = $this->createQueryBuilder('user');
 
-    /*
-    public function findOneBySomeField($value): ?User
-    {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
+        return $qb
+            ->where('user.name = :name')
+            ->setParameter(':name', $username)
+            ->setMaxResults(1)
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getOneOrNullResult();
     }
-    */
+
+    public function findOneByUserHandle(string $userHandle): ?User
+    {
+        $qb = $this->createQueryBuilder('user');
+
+        return $qb
+            ->where('user.user_handle = :user_handle')
+            ->setParameter(':user_handle', $userHandle)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function createUserEntity(string $username,string $displayName,?string $icon) : PublicKeyCredentialUserEntity
+    {
+        return new User(Uuid::getFactory()->uuid4()->toString(), $username, $displayName, ['ROLE_USER']);
+    }
 }

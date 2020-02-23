@@ -3,30 +3,35 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Form\Type\EmailRedirectionType;
 use App\Model\EmailRedirection;
 use App\Provider\Ovh;
-use App\Webauthn\PublicKeyCredentialSourceRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Webauthn\PublicKeyCredentialRpEntity;
-use Webauthn\Server;
+use Webauthn\Bundle\Service\PublicKeyCredentialCreationOptionsFactory;
 
 class AppController extends AbstractController
 {
-    /** @var SessionInterface */
-    private $session;
+    private SessionInterface $session;
+    private Ovh $ovh;
+    private ManagerRegistry $managerRegistry;
+    private PublicKeyCredentialCreationOptionsFactory $publicKeyCredentialCreationOptionsFactory;
 
-    /** @var Ovh */
-    private $ovh;
-
-    public function __construct(SessionInterface $session, Ovh $ovh)
-    {
+    public function __construct(
+        SessionInterface $session,
+        Ovh $ovh,
+        ManagerRegistry $managerRegistry,
+        PublicKeyCredentialCreationOptionsFactory $publicKeyCredentialCreationOptionsFactory
+    ) {
         $this->session = $session;
         $this->ovh = $ovh;
+        $this->managerRegistry = $managerRegistry;
+        $this->publicKeyCredentialCreationOptionsFactory = $publicKeyCredentialCreationOptionsFactory;
     }
 
     /**
@@ -42,18 +47,13 @@ class AppController extends AbstractController
      */
     public function loginPasswordless(): Response
     {
-        $rpEntity = new PublicKeyCredentialRpEntity(
-            'Webauthn Server',
-            'localhost'
-        );
-        $publicKeyCredentialSourceRepository = new PublicKeyCredentialSourceRepository();
+        $userRepository = $this->managerRegistry->getRepository(User::class);
 
-        $server = new Server(
-            $rpEntity,
-            $publicKeyCredentialSourceRepository,
-            null
-        );
-        return $this->render('register.html.twig');
+        $userEntity = $userRepository->createUserEntity('username', 'John Doe', null);
+
+        $publicKeyCredentialCreationOptions = $this->publicKeyCredentialCreationOptionsFactory->create('user_profile', $userEntity);
+
+        return $this->render('register.html.twig', ['publicKeyCredential' => $publicKeyCredentialCreationOptions->jsonSerialize()]);
     }
 
     /**

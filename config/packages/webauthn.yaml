@@ -1,0 +1,23 @@
+webauthn:
+  credential_repository: 'App\Repository\PublicKeyCredentialSourceRepository'
+  user_repository: 'App\Repository\UserRepository'
+
+  creation_profiles:
+    user_profile: # Unique name of the profile
+      public_key_credential_parameters: # Mandatory. Algorithms ES256 and RS256 should be included. In order of preference
+        - !php/const Cose\Algorithms::COSE_ALGORITHM_ES256
+        - !php/const Cose\Algorithms::COSE_ALGORITHM_RS256
+      rp:
+        name: 'Email redirection'
+        id: 'email-redirection.piaf.eu'
+        icon: 'https://demo.webauth.app/assets/app.png' # Optional icon. May be ignored by the browser
+      challenge_length: 16 # Length of the challenge (in bytes).
+      timeout: 30000 # May be ignored by the browser
+      authenticator_selection_criteria: # Optional. See https://www.w3.org/TR/webauthn/#authenticatorSelection
+        attachment_mode: !php/const Webauthn\AuthenticatorSelectionCriteria::AUTHENTICATOR_ATTACHMENT_PLATFORM
+        require_resident_key: true
+        user_verification: !php/const Webauthn\AuthenticatorSelectionCriteria::USER_VERIFICATION_REQUIREMENT_REQUIRED
+      attestation_conveyance: !php/const Webauthn\PublicKeyCredentialCreationOptions::ATTESTATION_CONVEYANCE_PREFERENCE_DIRECT # Optional. No preference by default.
+      extensions: # Optional. See https://www.w3.org/TR/webauthn/#extensions
+        exts: true
+        uvi: true
