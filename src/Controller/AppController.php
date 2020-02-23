@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Dto\EmailRedirection;
 use App\Form\Type\EmailRedirectionType;
+use App\Model\EmailRedirection;
 use App\Provider\Ovh;
 use App\Webauthn\PublicKeyCredentialSourceRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

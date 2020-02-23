@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Provider;
 
-use App\Dto\EmailRedirection;
 use App\Exception\ConsumerKeyNotFoundInSessionException;
+use App\Model\EmailRedirection;
 use Ovh\Api;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;

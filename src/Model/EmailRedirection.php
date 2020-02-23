@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Dto;
+namespace App\Model;
 
 use Symfony\Component\Serializer\Annotation\Groups;
 
