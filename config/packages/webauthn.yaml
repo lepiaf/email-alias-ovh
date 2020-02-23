@@ -9,15 +9,15 @@ webauthn:
         - !php/const Cose\Algorithms::COSE_ALGORITHM_RS256
       rp:
         name: 'Email redirection'
-        id: 'email-redirection.piaf.eu'
+        id: 'localhost'
         icon: 'https://demo.webauth.app/assets/app.png' # Optional icon. May be ignored by the browser
       challenge_length: 16 # Length of the challenge (in bytes).
       timeout: 30000 # May be ignored by the browser
-      authenticator_selection_criteria: # Optional. See https://www.w3.org/TR/webauthn/#authenticatorSelection
-        attachment_mode: !php/const Webauthn\AuthenticatorSelectionCriteria::AUTHENTICATOR_ATTACHMENT_PLATFORM
-        require_resident_key: true
-        user_verification: !php/const Webauthn\AuthenticatorSelectionCriteria::USER_VERIFICATION_REQUIREMENT_REQUIRED
-      attestation_conveyance: !php/const Webauthn\PublicKeyCredentialCreationOptions::ATTESTATION_CONVEYANCE_PREFERENCE_DIRECT # Optional. No preference by default.
-      extensions: # Optional. See https://www.w3.org/TR/webauthn/#extensions
-        exts: true
-        uvi: true
+#      authenticator_selection_criteria: # Optional. See https://www.w3.org/TR/webauthn/#authenticatorSelection
+#        attachment_mode: !php/const Webauthn\AuthenticatorSelectionCriteria::AUTHENTICATOR_ATTACHMENT_PLATFORM
+#        require_resident_key: true
+#        user_verification: !php/const Webauthn\AuthenticatorSelectionCriteria::USER_VERIFICATION_REQUIREMENT_REQUIRED
+#      attestation_conveyance: !php/const Webauthn\PublicKeyCredentialCreationOptions::ATTESTATION_CONVEYANCE_PREFERENCE_DIRECT # Optional. No preference by default.
+#      extensions: # Optional. See https://www.w3.org/TR/webauthn/#extensions
+#        exts: true
+#        uvi: true

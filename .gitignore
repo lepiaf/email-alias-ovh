@@ -8,3 +8,5 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
+/docker/nginx/cert/*
+!/docker/nginx/cert/.gitkeep
