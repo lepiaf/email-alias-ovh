@@ -66,9 +66,6 @@
     "doctrine/lexer": {
         "version": "1.2.0"
     },
-    "fgrosse/phpasn1": {
-        "version": "v2.1.1"
-    },
     "doctrine/migrations": {
         "version": "2.2.1"
     },
@@ -81,6 +78,9 @@
     "doctrine/reflection": {
         "version": "v1.1.0"
     },
+    "fgrosse/phpasn1": {
+        "version": "v2.1.1"
+    },
     "guzzlehttp/guzzle": {
         "version": "6.5.2"
     },
@@ -89,15 +89,6 @@
     },
     "guzzlehttp/psr7": {
         "version": "1.6.1"
-    },
-    "league/uri": {
-        "version": "6.2.0"
-    },
-    "league/uri-components": {
-        "version": "2.2.1"
-    },
-    "league/uri-interfaces": {
-        "version": "2.1.0"
     },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
@@ -111,8 +102,14 @@
     "laminas/laminas-zendframework-bridge": {
         "version": "1.0.1"
     },
-    "nikic/php-parser": {
-        "version": "v4.3.0"
+    "league/uri": {
+        "version": "6.2.0"
+    },
+    "league/uri-components": {
+        "version": "2.2.1"
+    },
+    "league/uri-interfaces": {
+        "version": "2.1.0"
     },
     "ocramius/package-versions": {
         "version": "1.5.1"
@@ -275,15 +272,6 @@
     },
     "symfony/intl": {
         "version": "v5.0.4"
-    },
-    "symfony/maker-bundle": {
-        "version": "1.0",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "1.0",
-            "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
-        }
     },
     "symfony/mime": {
         "version": "v5.0.4"
