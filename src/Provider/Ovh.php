@@ -6,7 +6,6 @@ namespace App\Provider;
 use App\Exception\ConsumerKeyNotFoundInSessionException;
 use App\Model\EmailRedirection;
 use Ovh\Api;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
@@ -27,21 +26,16 @@ class Ovh implements Provider
     /** @var DenormalizerInterface */
     private $denormalizer;
 
-    /** @var SessionInterface */
-    private $session;
-
     public function __construct(
         string $ovhApplicationKey,
         string $ovhApplicationSecret,
         NormalizerInterface $normalizer,
-        DenormalizerInterface $denormalizer,
-        SessionInterface $session
+        DenormalizerInterface $denormalizer
     ) {
         $this->ovhApplicationKey = $ovhApplicationKey;
         $this->ovhApplicationSecret = $ovhApplicationSecret;
         $this->normalizer = $normalizer;
         $this->denormalizer = $denormalizer;
-        $this->session = $session;
     }
 
     public function login(string $redirectUri): string
@@ -63,7 +57,7 @@ class Ovh implements Provider
 
         $conn = new Api($this->ovhApplicationKey, $this->ovhApplicationSecret, self::API_ENDPOINT);
         $credentials = $conn->requestCredentials($rights, $redirectUri);
-        $this->session->set('consumerKey', $credentials['consumerKey']);
+//        $this->session->set('consumerKey', $credentials['consumerKey']);
 
         return $credentials['validationUrl'];
     }
@@ -117,15 +111,15 @@ class Ovh implements Provider
 
     private function getOvhConnection(): Api
     {
-        if (!$this->session->has('consumerKey') || !$this->session->get('consumerKey')) {
-            throw new ConsumerKeyNotFoundInSessionException();
-        }
+//        if (!$this->session->has('consumerKey') || !$this->session->get('consumerKey')) {
+//            throw new ConsumerKeyNotFoundInSessionException();
+//        }
 
         return new Api(
             $this->ovhApplicationKey,
             $this->ovhApplicationSecret,
             self::API_ENDPOINT,
-            $this->session->get('consumerKey')
+            'consumerKey'
         );
     }
 }

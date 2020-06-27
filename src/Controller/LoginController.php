@@ -5,35 +5,63 @@ namespace App\Controller;
 
 use App\Exception\AlreadyLoggedException;
 use App\Provider\Ovh;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
+use Webauthn\Bundle\Service\PublicKeyCredentialCreationOptionsFactory;
 
 class LoginController extends AbstractController
 {
-    /** @var SessionInterface */
-    private $session;
+    private RouterInterface $router;
+    private Ovh $ovh;
+    private ManagerRegistry $managerRegistry;
+    private PublicKeyCredentialCreationOptionsFactory $publicKeyCredentialCreationOptionsFactory;
 
-    /** @var RouterInterface */
-    private $router;
-
-    /** @var Ovh */
-    private $ovh;
-
-    public function __construct(SessionInterface $session, RouterInterface $router, Ovh $ovh)
-    {
-        $this->session = $session;
+    public function __construct(
+        RouterInterface $router,
+        Ovh $ovh,
+        ManagerRegistry $managerRegistry,
+        PublicKeyCredentialCreationOptionsFactory $publicKeyCredentialCreationOptionsFactory
+    ) {
         $this->router = $router;
         $this->ovh = $ovh;
+        $this->managerRegistry = $managerRegistry;
+        $this->publicKeyCredentialCreationOptionsFactory = $publicKeyCredentialCreationOptionsFactory;
     }
 
     /**
-     * @Route("/login")
+     * @Route("/login", methods={"GET"})
      */
     public function login(Request $request): Response
+    {
+        return $this->render(
+            'login.html.twig',
+            [
+
+            ]
+        );
+    }
+
+    /**
+     * @Route("/register", methods={"GET"})
+     */
+    public function register(Request $request): Response
+    {
+        return $this->render(
+            'register.html.twig',
+            [
+
+            ]
+        );
+    }
+
+    /**
+     * @Route("/login/provider/ovh", methods={"GET"})
+     */
+    public function loginProviderOvh(Request $request): Response
     {
         try {
             $redirectUri = $request->getUriForPath($this->router->generate('app_app_me'));
@@ -43,7 +71,7 @@ class LoginController extends AbstractController
         }
 
         return $this->render(
-            'login.html.twig',
+            'loginProviderOvh.html.twig',
             [
                 'validationUrl' => $credentials,
             ]
@@ -55,8 +83,6 @@ class LoginController extends AbstractController
      */
     public function logout(): Response
     {
-        $this->session->clear();
-
         return $this->redirectToRoute('app_login_login');
     }
 }

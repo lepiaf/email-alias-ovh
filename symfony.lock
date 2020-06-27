@@ -111,8 +111,23 @@
     "league/uri-interfaces": {
         "version": "2.1.0"
     },
+    "monolog/monolog": {
+        "version": "2.1.0"
+    },
     "nikic/php-parser": {
         "version": "v4.3.0"
+    },
+    "nyholm/psr7": {
+        "version": "1.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.0",
+            "ref": "7c0a9352a57376f04f5444e74565102c3a23d0c7"
+        },
+        "files": [
+            "config/packages/nyholm_psr7.yaml"
+        ]
     },
     "ocramius/package-versions": {
         "version": "1.5.1"
@@ -125,6 +140,9 @@
     },
     "php": {
         "version": "7.4"
+    },
+    "php-http/message-factory": {
+        "version": "v1.0.2"
     },
     "psr/cache": {
         "version": "1.0.1"
@@ -185,6 +203,9 @@
     },
     "spomky-labs/cbor-php": {
         "version": "v1.0.8"
+    },
+    "symfony/asset": {
+        "version": "v5.1.2"
     },
     "symfony/cache": {
         "version": "v5.0.4"
@@ -291,6 +312,24 @@
     "symfony/mime": {
         "version": "v5.0.4"
     },
+    "symfony/monolog-bridge": {
+        "version": "v5.1.2"
+    },
+    "symfony/monolog-bundle": {
+        "version": "3.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "3.3",
+            "ref": "d7249f7d560f6736115eee1851d02a65826f0a56"
+        },
+        "files": [
+            "config/packages/dev/monolog.yaml",
+            "config/packages/prod/deprecations.yaml",
+            "config/packages/prod/monolog.yaml",
+            "config/packages/test/monolog.yaml"
+        ]
+    },
     "symfony/options-resolver": {
         "version": "v5.0.4"
     },
@@ -314,6 +353,9 @@
     },
     "symfony/property-access": {
         "version": "v5.0.4"
+    },
+    "symfony/psr-http-message-bridge": {
+        "version": "v2.0.1"
     },
     "symfony/routing": {
         "version": "4.2",
@@ -384,6 +426,19 @@
     },
     "symfony/twig-pack": {
         "version": "v1.0.0"
+    },
+    "symfony/validator": {
+        "version": "4.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.3",
+            "ref": "d902da3e4952f18d3bf05aab29512eb61cabd869"
+        },
+        "files": [
+            "config/packages/test/validator.yaml",
+            "config/packages/validator.yaml"
+        ]
     },
     "symfony/var-dumper": {
         "version": "v5.0.4"

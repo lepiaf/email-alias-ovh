@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Form\Type\EmailRedirectionType;
 use App\Model\EmailRedirection;
 use App\Provider\Ovh;
@@ -11,24 +10,20 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Webauthn\Bundle\Service\PublicKeyCredentialCreationOptionsFactory;
 
 class AppController extends AbstractController
 {
-    private SessionInterface $session;
     private Ovh $ovh;
     private ManagerRegistry $managerRegistry;
     private PublicKeyCredentialCreationOptionsFactory $publicKeyCredentialCreationOptionsFactory;
 
     public function __construct(
-        SessionInterface $session,
         Ovh $ovh,
         ManagerRegistry $managerRegistry,
         PublicKeyCredentialCreationOptionsFactory $publicKeyCredentialCreationOptionsFactory
     ) {
-        $this->session = $session;
         $this->ovh = $ovh;
         $this->managerRegistry = $managerRegistry;
         $this->publicKeyCredentialCreationOptionsFactory = $publicKeyCredentialCreationOptionsFactory;
@@ -39,21 +34,7 @@ class AppController extends AbstractController
      */
     public function home(): Response
     {
-        return $this->redirectToRoute('app_app_me');
-    }
-
-    /**
-     * @Route("/login/passwordless")
-     */
-    public function loginPasswordless(): Response
-    {
-        $userRepository = $this->managerRegistry->getRepository(User::class);
-
-        $userEntity = $userRepository->createUserEntity('username', 'John Doe', null);
-
-        $publicKeyCredentialCreationOptions = $this->publicKeyCredentialCreationOptionsFactory->create('user_profile', $userEntity);
-
-        return $this->render('register.html.twig', ['publicKeyCredential' => $publicKeyCredentialCreationOptions->jsonSerialize()]);
+        return $this->redirectToRoute('app_login_login');
     }
 
     /**
@@ -68,7 +49,7 @@ class AppController extends AbstractController
             [
                 'firstName' => $me['firstname'],
                 'name' => $me['name'],
-                'consumerKey' => $this->session->get('consumerKey')
+                'consumerKey' => 'consumerKey'
             ]
         );
     }

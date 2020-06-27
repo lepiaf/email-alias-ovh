@@ -1,23 +1,43 @@
 webauthn:
-  credential_repository: 'App\Repository\PublicKeyCredentialSourceRepository'
-  user_repository: 'App\Repository\UserRepository'
-
-  creation_profiles:
-    user_profile: # Unique name of the profile
-      public_key_credential_parameters: # Mandatory. Algorithms ES256 and RS256 should be included. In order of preference
-        - !php/const Cose\Algorithms::COSE_ALGORITHM_ES256
-        - !php/const Cose\Algorithms::COSE_ALGORITHM_RS256
-      rp:
-        name: 'Email redirection'
-        id: 'localhost'
-        icon: 'https://demo.webauth.app/assets/app.png' # Optional icon. May be ignored by the browser
-      challenge_length: 16 # Length of the challenge (in bytes).
-      timeout: 30000 # May be ignored by the browser
-#      authenticator_selection_criteria: # Optional. See https://www.w3.org/TR/webauthn/#authenticatorSelection
-#        attachment_mode: !php/const Webauthn\AuthenticatorSelectionCriteria::AUTHENTICATOR_ATTACHMENT_PLATFORM
-#        require_resident_key: true
-#        user_verification: !php/const Webauthn\AuthenticatorSelectionCriteria::USER_VERIFICATION_REQUIREMENT_REQUIRED
-#      attestation_conveyance: !php/const Webauthn\PublicKeyCredentialCreationOptions::ATTESTATION_CONVEYANCE_PREFERENCE_DIRECT # Optional. No preference by default.
-#      extensions: # Optional. See https://www.w3.org/TR/webauthn/#extensions
-#        exts: true
-#        uvi: true
+  #    logger: null # PSR-3 compatible logging service
+  credential_repository: 'Webauthn\Bundle\Repository\DummyPublicKeyCredentialSourceRepository' # CREATE YOUR REPOSITORY AND CHANGE THIS!
+  user_repository: 'Webauthn\Bundle\Repository\DummyPublicKeyCredentialUserEntityRepository' # CREATE YOUR REPOSITORY AND CHANGE THIS!
+  token_binding_support_handler: 'Webauthn\TokenBinding\IgnoreTokenBindingHandler' # We ignore the token binding instructions by default
+  creation_profiles: # Authenticator registration profiles
+    default: # Unique name of the profile
+      rp: # Relaying Party information
+        name: '%env(RELAYING_PARTY_NAME)%'
+        id: '%env(RELAYING_PARTY_ID)%'
+#                icon: null # Secured image (data:// scheme)
+#            challenge_length: 32
+#            timeout: 60000
+#            authenticator_selection_criteria:
+#                attachment_mode: !php/const Webauthn\AuthenticatorSelectionCriteria::AUTHENTICATOR_ATTACHMENT_NO_PREFERENCE
+#                require_resident_key: false
+#                user_verification: !php/const Webauthn\AuthenticatorSelectionCriteria::USER_VERIFICATION_REQUIREMENT_PREFERRED
+#            extensions:
+#                loc: true
+#            public_key_credential_parameters: # You should not change this list
+#                - !php/const Cose\Algorithms::COSE_ALGORITHM_EdDSA #Order is important. Preferred algorithms go first
+#                - !php/const Cose\Algorithms::COSE_ALGORITHM_ES256
+#                - !php/const Cose\Algorithms::COSE_ALGORITHM_ES256K
+#                - !php/const Cose\Algorithms::COSE_ALGORITHM_ES384
+#                - !php/const Cose\Algorithms::COSE_ALGORITHM_ES512
+#                - !php/const Cose\Algorithms::COSE_ALGORITHM_RS256
+#                - !php/const Cose\Algorithms::COSE_ALGORITHM_RS384
+#                - !php/const Cose\Algorithms::COSE_ALGORITHM_RS512
+#                - !php/const Cose\Algorithms::COSE_ALGORITHM_PS256
+#                - !php/const Cose\Algorithms::COSE_ALGORITHM_PS384
+#                - !php/const Cose\Algorithms::COSE_ALGORITHM_PS512
+#            attestation_conveyance: !php/const Webauthn\PublicKeyCredentialCreationOptions::ATTESTATION_CONVEYANCE_PREFERENCE_NONE
+  request_profiles: # Authentication profiles
+    default: # Unique name of the profile
+      rp_id: '%env(RELAYING_PARTY_ID)%'
+#            challenge_length: 32
+#            timeout: 60000
+#            user_verification: !php/const Webauthn\AuthenticatorSelectionCriteria::USER_VERIFICATION_REQUIREMENT_PREFERRED
+#            extensions:
+#                loc: true
+#    metadata_service:
+#        enabled: false
+#        repository: 'App\Repository\MetadataStatementRepository'

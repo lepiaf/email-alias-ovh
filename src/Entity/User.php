@@ -1,68 +1,41 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\UuidInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Webauthn\PublicKeyCredentialUserEntity;
 
 /**
+ * @ORM\Table(name="users")
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @UniqueEntity("name")
  */
 class User extends PublicKeyCredentialUserEntity implements UserInterface
 {
     /**
      * @ORM\Id
-     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\Column(type="string", length=255)
      */
     protected $id;
 
     /**
      * @ORM\Column(type="json")
      */
-    private $roles;
+    protected array $roles;
 
-    /**
-     * @var PublicKeyCredentialSource[]
-     * @ORM\ManyToMany(targetEntity="App\Entity\PublicKeyCredentialSource")
-     * @ORM\JoinTable(name="users_user_handles",
-     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="user_handle", referencedColumnName="id", unique=true)}
-     *      )
-     */
-    protected $publicKeyCredentialSources;
-
-    public function __construct(string $id, string $name, string $displayName, array $roles)
+    public function __construct(string $id, string $name, string $displayName, ?string $icon = null, array $roles = [])
     {
-        parent::__construct($name, $id, $displayName);
+        parent::__construct($name, $id, $displayName, $icon);
         $this->roles = $roles;
-        $this->publicKeyCredentialSources = new ArrayCollection();
-    }
-
-    public function getId(): string
-    {
-        return $this->id;
-    }
-
-    public function getUsername(): string
-    {
-        return (string) $this->name;
     }
 
     public function getRoles(): array
     {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
-    }
-
-    public function setRoles(array $roles): void
-    {
-        $this->roles = $roles;
+        return array_unique($this->roles + ['ROLE_USER']);
     }
 
     public function getPassword(): void
@@ -73,25 +46,12 @@ class User extends PublicKeyCredentialUserEntity implements UserInterface
     {
     }
 
+    public function getUsername(): ?string
+    {
+        return $this->name;
+    }
+
     public function eraseCredentials(): void
     {
-    }
-
-    /**
-     * @return PublicKeyCredentialSource[]
-     */
-    public function getPublicKeyCredentialSources(): array
-    {
-        return $this->publicKeyCredentialSources->getValues();
-    }
-
-    public function addPublicKeyCredentialSources(PublicKeyCredentialSource $publicKeyCredentialSource)
-    {
-        $this->publicKeyCredentialSources->add($publicKeyCredentialSource);
-    }
-
-    public function removePublicKeyCredentialSources(PublicKeyCredentialSource $publicKeyCredentialSource)
-    {
-        $this->publicKeyCredentialSources->remove($publicKeyCredentialSource);
     }
 }

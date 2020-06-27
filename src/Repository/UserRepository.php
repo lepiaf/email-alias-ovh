@@ -1,52 +1,54 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\User;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Ramsey\Uuid\Uuid;
+use Webauthn\Bundle\Repository\AbstractPublicKeyCredentialUserEntityRepository;
 use Webauthn\PublicKeyCredentialUserEntity;
 
-/**
- * @method User|null find($id, $lockMode = null, $lockVersion = null)
- * @method User|null findOneBy(array $criteria, array $orderBy = null)
- * @method User[]    findAll()
- * @method User[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
-class UserRepository extends ServiceEntityRepository
+final class UserRepository extends AbstractPublicKeyCredentialUserEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, User::class);
     }
 
-    public function findOneByUsername(string $username): ?User
+    public function createUserEntity(string $username, string $displayName, ?string $icon): PublicKeyCredentialUserEntity
     {
-        $qb = $this->createQueryBuilder('user');
+        $id = Uuid::uuid4()->toString();
 
-        return $qb
-            ->where('user.name = :name')
+        return new User($id, $username, $displayName, $icon, []);
+    }
+
+    public function saveUserEntity(PublicKeyCredentialUserEntity $userEntity): void
+    {
+        if (!$userEntity instanceof User) {
+            $userEntity =  new User(
+                $userEntity->getId(),
+                $userEntity->getName(),
+                $userEntity->getDisplayName(),
+                $userEntity->getId()
+            );
+        }
+
+        parent::saveUserEntity($userEntity);
+    }
+
+    public function find(string $username): ?User
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        return $qb->select('u')
+            ->from(User::class, 'u')
+            ->where('u.name = :name')
             ->setParameter(':name', $username)
             ->setMaxResults(1)
             ->getQuery()
-            ->getOneOrNullResult();
-    }
-
-    public function findOneByUserHandle(string $userHandle): ?User
-    {
-        $qb = $this->createQueryBuilder('user');
-
-        return $qb
-            ->where('user.user_handle = :user_handle')
-            ->setParameter(':user_handle', $userHandle)
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getOneOrNullResult();
-    }
-
-    public function createUserEntity(string $username,string $displayName,?string $icon) : PublicKeyCredentialUserEntity
-    {
-        return new User(Uuid::getFactory()->uuid4()->toString(), $username, $displayName, ['ROLE_USER']);
+            ->getOneOrNullResult()
+            ;
     }
 }

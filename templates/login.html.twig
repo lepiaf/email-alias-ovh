@@ -1,10 +1,20 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-Login to OVH
+    Login
 {% endblock %}
 
 {% block body %}
-    <h1>Login to OVH</h1>
-    <a href="{{ validationUrl }}">Validation URL</a>
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/webauthn-helper.js') }}"></script>
+    <script>
+        const login = useLogin({});
+        login({username: 'dummy'})
+            .then((response)=> console.log('Login success'))
+            .catch((error)=> console.log('Login failure'));
+    </script>
 {% endblock %}
