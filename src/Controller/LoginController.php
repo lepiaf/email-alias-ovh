@@ -1,61 +1,46 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controller;
 
 use App\Exception\AlreadyLoggedException;
 use App\Provider\Ovh;
-use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
-use Webauthn\Bundle\Service\PublicKeyCredentialCreationOptionsFactory;
 
 class LoginController extends AbstractController
 {
     private RouterInterface $router;
     private Ovh $ovh;
-    private ManagerRegistry $managerRegistry;
-    private PublicKeyCredentialCreationOptionsFactory $publicKeyCredentialCreationOptionsFactory;
 
-    public function __construct(
-        RouterInterface $router,
-        Ovh $ovh,
-        ManagerRegistry $managerRegistry,
-        PublicKeyCredentialCreationOptionsFactory $publicKeyCredentialCreationOptionsFactory
-    ) {
+    public function __construct(RouterInterface $router, Ovh $ovh)
+    {
         $this->router = $router;
         $this->ovh = $ovh;
-        $this->managerRegistry = $managerRegistry;
-        $this->publicKeyCredentialCreationOptionsFactory = $publicKeyCredentialCreationOptionsFactory;
     }
 
     /**
      * @Route("/login", methods={"GET"})
      */
-    public function login(Request $request): Response
+    public function login(): Response
     {
-        return $this->render(
-            'login.html.twig',
-            [
+        if ($this->getUser()) {
+            return $this->redirectToRoute('app_app_me');
+        }
 
-            ]
-        );
+        return $this->render('login.html.twig');
     }
 
     /**
      * @Route("/register", methods={"GET"})
      */
-    public function register(Request $request): Response
+    public function register(): Response
     {
-        return $this->render(
-            'register.html.twig',
-            [
-
-            ]
-        );
+        return $this->render('register.html.twig');
     }
 
     /**
@@ -63,6 +48,8 @@ class LoginController extends AbstractController
      */
     public function loginProviderOvh(Request $request): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         try {
             $redirectUri = $request->getUriForPath($this->router->generate('app_app_me'));
             $credentials = $this->ovh->login($redirectUri);
@@ -70,12 +57,7 @@ class LoginController extends AbstractController
             return $this->redirectToRoute('app_app_me');
         }
 
-        return $this->render(
-            'loginProviderOvh.html.twig',
-            [
-                'validationUrl' => $credentials,
-            ]
-        );
+        return $this->render('loginProviderOvh.html.twig', ['validationUrl' => $credentials]);
     }
 
     /**

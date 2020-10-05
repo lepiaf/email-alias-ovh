@@ -1,9 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Dto\EmailRedirection;
+use App\Model\EmailRedirection;
 use App\Provider\Ovh;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -64,7 +65,7 @@ class ApiController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        $emailRedirection = new EmailRedirection(null, null, $request->get('domain'), (int) $request->get('redirectionId'));
+        $emailRedirection = new EmailRedirection(null, null, $request->get('domain'), $request->get('redirectionId'));
         $this->ovh->deleteEmailRedirection($emailRedirection);
 
         return $this->redirectToRoute('app_app_listemailredirection', ['domain' => $emailRedirection->getDomain()]);

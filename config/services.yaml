@@ -25,5 +25,6 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
-#    App\Repository\PublicKeyCredentialSourceRepository: ~
-#    App\Repository\UserRepository: ~
+    App\EventListener\OvhForbiddenException:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }

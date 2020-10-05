@@ -22,14 +22,14 @@ class EmailRedirection
     /**
      * @Groups({"detail"})
      */
-    private ?int $id;
+    private ?string $id;
 
     /**
      * @Groups({"create"})
      */
     private bool $localCopy = false;
 
-    public function __construct(?string $from = null, ?string $to = null, ?string $domain = null, ?int $id = null)
+    public function __construct(?string $from = null, ?string $to = null, ?string $domain = null, ?string $id = null)
     {
         $this->from = $from;
         $this->to = $to;
@@ -52,7 +52,7 @@ class EmailRedirection
         return $this->domain;
     }
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -72,7 +72,7 @@ class EmailRedirection
         $this->domain = $domain;
     }
 
-    public function setId(int $id): void
+    public function setId(string $id): void
     {
         $this->id = $id;
     }

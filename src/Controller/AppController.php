@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controller;
@@ -6,27 +7,17 @@ namespace App\Controller;
 use App\Form\Type\EmailRedirectionType;
 use App\Model\EmailRedirection;
 use App\Provider\Ovh;
-use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Webauthn\Bundle\Service\PublicKeyCredentialCreationOptionsFactory;
 
 class AppController extends AbstractController
 {
     private Ovh $ovh;
-    private ManagerRegistry $managerRegistry;
-    private PublicKeyCredentialCreationOptionsFactory $publicKeyCredentialCreationOptionsFactory;
 
-    public function __construct(
-        Ovh $ovh,
-        ManagerRegistry $managerRegistry,
-        PublicKeyCredentialCreationOptionsFactory $publicKeyCredentialCreationOptionsFactory
-    ) {
+    public function __construct(Ovh $ovh) {
         $this->ovh = $ovh;
-        $this->managerRegistry = $managerRegistry;
-        $this->publicKeyCredentialCreationOptionsFactory = $publicKeyCredentialCreationOptionsFactory;
     }
 
     /**
@@ -42,22 +33,16 @@ class AppController extends AbstractController
      */
     public function me(): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         $me = $this->ovh->me();
 
-        return $this->render(
-            'me.html.twig',
-            [
-                'firstName' => $me['firstname'],
-                'name' => $me['name'],
-                'consumerKey' => 'consumerKey'
-            ]
-        );
+        return $this->render('me.html.twig', ['firstName' => $me['firstname'], 'name' => $me['name']]);
     }
 
     /**
      * @Route("/email/{domain}/redirection/create")
      */
-    public function createEmailRedirection(Request $request)
+    public function createEmailRedirection()
     {
         $form = $this->createForm(
             EmailRedirectionType::class,
@@ -73,9 +58,8 @@ class AppController extends AbstractController
                 ['domain' => $request->get('domain')]
             );
         }
-        return $this->render('createEmailRedirection.html.twig', [
-            'form' => $form->createView(),
-        ]);
+
+        return $this->render('createEmailRedirection.html.twig', ['form' => $form->createView()]);
     }
 
     /**
@@ -83,10 +67,7 @@ class AppController extends AbstractController
      */
     public function listEmailRedirection(Request $request): Response
     {
-        return $this->render(
-            'listEmailRedirection.html.twig',
-            ['domain' => $request->get('domain')]
-        );
+        return $this->render('listEmailRedirection.html.twig', ['domain' => $request->get('domain')]);
     }
 }
 

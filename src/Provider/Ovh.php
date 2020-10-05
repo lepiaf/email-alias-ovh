@@ -6,12 +6,13 @@ namespace App\Provider;
 use App\Entity\User;
 use App\Exception\ConsumerKeyNotFoundInSessionException;
 use App\Model\EmailRedirection;
+use Doctrine\Persistence\ManagerRegistry;
 use Ovh\Api;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class Ovh implements Provider
+class Ovh
 {
     /** @var string */
     private const API_ENDPOINT = 'ovh-eu';
@@ -21,16 +22,20 @@ class Ovh implements Provider
     private DenormalizerInterface $denormalizer;
     private Security $security;
 
+    private ManagerRegistry $registry;
+
     public function __construct(
         string $ovhApplicationKey,
         string $ovhApplicationSecret,
         Security $security,
+        ManagerRegistry $registry,
         NormalizerInterface $normalizer,
         DenormalizerInterface $denormalizer
     ) {
         $this->ovhApplicationKey = $ovhApplicationKey;
         $this->ovhApplicationSecret = $ovhApplicationSecret;
         $this->security = $security;
+        $this->registry = $registry;
         $this->normalizer = $normalizer;
         $this->denormalizer = $denormalizer;
     }
@@ -46,15 +51,13 @@ class Ovh implements Provider
                 'method' => 'POST',
                 'path' => '/email/domain/*/redirection',
             ],
-            (object) [
-                'method' => 'DELETE',
-                'path' => '/email/domain/*/redirection/*',
-            ]
         ];
 
         $conn = new Api($this->ovhApplicationKey, $this->ovhApplicationSecret, self::API_ENDPOINT);
         $credentials = $conn->requestCredentials($rights, $redirectUri);
-//        $this->session->set('consumerKey', $credentials['consumerKey']);
+
+        $this->security->getUser()->setConsumerKey($credentials['consumerKey']);
+        $this->registry->getManager()->flush();
 
         return $credentials['validationUrl'];
     }
@@ -108,7 +111,7 @@ class Ovh implements Provider
     private function getOvhConnection(): Api
     {
         $user = $this->security->getUser();
-        if (!$user instanceof User || $user->getConsumerKey()) {
+        if (!$user instanceof User || !$user->getConsumerKey()) {
             throw new ConsumerKeyNotFoundInSessionException();
         }
 
@@ -116,7 +119,7 @@ class Ovh implements Provider
             $this->ovhApplicationKey,
             $this->ovhApplicationSecret,
             self::API_ENDPOINT,
-            'consumerKey'
+            $user->getConsumerKey()
         );
     }
 }

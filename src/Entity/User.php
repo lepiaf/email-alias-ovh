@@ -59,4 +59,14 @@ class User extends PublicKeyCredentialUserEntity implements UserInterface
     public function eraseCredentials(): void
     {
     }
+
+    public function getConsumerKey(): string
+    {
+        return $this->consumerKey;
+    }
+
+    public function setConsumerKey(string $consumerKey): void
+    {
+        $this->consumerKey = $consumerKey;
+    }
 }

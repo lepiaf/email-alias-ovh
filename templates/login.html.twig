@@ -15,14 +15,14 @@
     {{ parent() }}
     <script src="{{ asset('js/webauthn-helper.js') }}"></script>
     <script>
-        document.querySelector('form').addEventListener('submit', (e) => {
-            e.preventDefault()
+        document.querySelector('form').addEventListener('submit', (event) => {
+            event.preventDefault()
 
             const formData = new FormData(document.querySelector('form'))
             const login = useLogin({});
             login({username: formData.get('login')})
-                .then((response) => console.log('Login success'))
-                .catch((error) => console.log('Login failure'));
+                .then((response) => { window.location.href = '/me' })
+                .catch((error) => { alert('Login failed') });
         });
     </script>
 {% endblock %}

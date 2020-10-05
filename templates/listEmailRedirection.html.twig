@@ -6,6 +6,13 @@
 
 {% block body %}
     <p><a href="{{ url('app_app_me') }}">Back to list of domain</a></p>
+    <p><a href="{{ url('app_app_createemailredirection', {'domain': domain}) }}">Create new redirection</a></p>
+    <div>
+        <form style="display: none" id="email-redirection-delete" action="{{ url('app_api_deleteemailredirection', { 'domain': domain, 'redirectionId': '#REDIRECTIONID#' }) }}" method="post">
+            <input type="hidden" name="token" value="{{ csrf_token('delete-email-redirection') }}"/>
+            <button disabled="" type="submit">select element in list</button>
+        </form>
+    </div>
     <table id="email-redirection-list" style="display: none">
         <thead>
             <tr><td>From</td><td>to</td><td>delete</td></tr>
@@ -14,13 +21,6 @@
         </tbody>
     </table>
     <div id="loader">Loading</div>
-    <p><a href="{{ url('app_app_createemailredirection', {'domain': domain}) }}">Create new redirection</a></p>
-    <div>
-        <form style="display: none" id="email-redirection-delete" action="{{ url('app_api_deleteemailredirection', { 'domain': domain, 'redirectionId': '#REDIRECTIONID#' }) }}" method="post">
-            <input type="hidden" name="token" value="{{ csrf_token('delete-email-redirection') }}"/>
-            <button disabled="" type="submit">select element in list</button>
-        </form>
-    </div>
 {% endblock %}
 
 {% block javascripts %}
