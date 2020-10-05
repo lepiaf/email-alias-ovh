@@ -10,7 +10,7 @@ security:
             anonymous: true
             webauthn:
                 registration:
-                    enabled: true
+                    enabled: '%env(ALLOW_REGISTRATION)%'
             logout: ~
 
     # Easy way to control access for large sections of your site
