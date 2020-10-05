@@ -25,6 +25,6 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
-    App\EventListener\OvhForbiddenException:
+    App\EventListener\InvalidConsumerKeyListener:
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
