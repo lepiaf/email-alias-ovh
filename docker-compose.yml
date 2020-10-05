@@ -6,6 +6,8 @@ services:
       MYSQL_ROOT_PASSWORD: root
     ports:
       - '3306:3306'
+    volumes:
+    - "db:/var/lib/mysql"
   adminer:
     image: adminer
     ports:
@@ -30,3 +32,6 @@ services:
       - php
     volumes:
       - ./:/var/www/symfony:ro
+
+volumes:
+  db:
