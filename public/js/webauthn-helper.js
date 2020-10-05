@@ -1,13 +1,15 @@
 // Predefined fetch function
-const fetchEndpoint = (data, url) => {
+const fetchEndpoint = (data, url, header) => {
     return fetch(
         url,
         {
             method: 'POST',
             credentials: 'same-origin',
+            redirect: 'error',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
+                ...header
             },
             body: JSON.stringify(data),
         }
@@ -68,8 +70,6 @@ const preparePublicKeyOptions = publicKey => {
         );
     }
 
-    /*publicKey.challenge = Uint8Array.from(
-        window.atob(publicKey.challenge), c => c.charCodeAt(0));*/
     if (publicKey.allowCredentials !== undefined) {
         publicKey.allowCredentials = publicKey.allowCredentials.map(
             data => {
@@ -127,28 +127,36 @@ const preparePublicKeyCredentials = data => {
     return publicKeyCredential;
 };
 
-const useRegistration = ({actionUrl = '/register', optionsUrl = '/register/options'}) => {
+const useRegistration = ({actionUrl = '/register', actionHeader = {}, optionsUrl = '/register/options'}, optionsHeader = {}) => {
     return async (data) => {
-        const optionsResponse = await fetchEndpoint(data, optionsUrl);
+        const optionsResponse = await fetchEndpoint(data, optionsUrl, optionsHeader);
         const json = await optionsResponse.json();
         const publicKey = preparePublicKeyOptions(json);
         const credentials = await navigator.credentials.create({publicKey});
         const publicKeyCredential = preparePublicKeyCredentials(credentials);
-        const actionResponse = await fetchEndpoint(publicKeyCredential, actionUrl);
+        const actionResponse = await fetchEndpoint(publicKeyCredential, actionUrl, actionHeader);
+        if (! actionResponse.ok) {
+            throw actionResponse;
+        }
+        const responseBody = await actionResponse.text();
 
-        return await actionResponse.json();
+        return responseBody !== '' ? JSON.parse(responseBody) : responseBody;
     };
 };
 
-const useLogin = ({actionUrl = '/login', optionsUrl = '/login/options'}) => {
+const useLogin = ({actionUrl = '/login', actionHeader = {}, optionsUrl = '/login/options'}, optionsHeader = {}) => {
     return async (data) => {
-        const optionsResponse = await fetchEndpoint(data, optionsUrl);
+        const optionsResponse = await fetchEndpoint(data, optionsUrl, optionsHeader);
         const json = await optionsResponse.json();
         const publicKey = preparePublicKeyOptions(json);
         const credentials = await navigator.credentials.get({publicKey});
         const publicKeyCredential = preparePublicKeyCredentials(credentials);
-        const actionResponse = await fetchEndpoint(publicKeyCredential, actionUrl);
+        const actionResponse = await fetchEndpoint(publicKeyCredential, actionUrl, actionHeader);
+        if (! actionResponse.ok) {
+            throw actionResponse;
+        }
+        const responseBody = await actionResponse.text();
 
-        return await actionResponse.json();
+        return responseBody !== '' ? JSON.parse(responseBody) : responseBody;
     };
 };

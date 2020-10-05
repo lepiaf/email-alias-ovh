@@ -14,11 +14,8 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class ApiController extends AbstractController
 {
-    /** @var Ovh */
-    private $ovh;
-
-    /** @var NormalizerInterface */
-    private $normalizer;
+    private Ovh $ovh;
+    private NormalizerInterface $normalizer;
 
     public function __construct(Ovh $ovh, NormalizerInterface $normalizer)
     {

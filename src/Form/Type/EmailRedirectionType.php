@@ -29,6 +29,4 @@ class EmailRedirectionType extends AbstractType
             'data_class' => EmailRedirection::class,
         ]);
     }
-
-
 }

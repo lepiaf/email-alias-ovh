@@ -27,6 +27,11 @@ class User extends PublicKeyCredentialUserEntity implements UserInterface
      */
     protected array $roles;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    protected string $consumerKey = '';
+
     public function __construct(string $id, string $name, string $displayName, ?string $icon = null, array $roles = [])
     {
         parent::__construct($name, $id, $displayName, $icon);

@@ -1,8 +1,8 @@
 webauthn:
   #    logger: null # PSR-3 compatible logging service
-  credential_repository: 'Webauthn\Bundle\Repository\DummyPublicKeyCredentialSourceRepository' # CREATE YOUR REPOSITORY AND CHANGE THIS!
-  user_repository: 'Webauthn\Bundle\Repository\DummyPublicKeyCredentialUserEntityRepository' # CREATE YOUR REPOSITORY AND CHANGE THIS!
-  token_binding_support_handler: 'Webauthn\TokenBinding\IgnoreTokenBindingHandler' # We ignore the token binding instructions by default
+  credential_repository: 'App\Repository\PublicKeyCredentialSourceRepository'
+  user_repository: 'App\Repository\UserRepository'
+  token_binding_support_handler: 'Webauthn\TokenBinding\IgnoreTokenBindingHandler'
   creation_profiles: # Authenticator registration profiles
     default: # Unique name of the profile
       rp: # Relaying Party information
