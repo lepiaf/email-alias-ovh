@@ -1,10 +1,10 @@
-FROM php:7.4-fpm
+FROM php:8.0-fpm
 
 RUN apt-get update \
   && apt-get install -y libgmp-dev git unzip libzip-dev zip libicu-dev \
   && docker-php-ext-install gmp pdo_mysql zip intl
 
-COPY --from=composer:1 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 COPY docker/php-fpm/symfony.ini /etc/local/etc/php/conf.d/
 COPY docker/php-fpm/symfony.pool.conf /usr/local/etc/php-fpm.conf

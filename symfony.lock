@@ -81,6 +81,9 @@
     "fgrosse/phpasn1": {
         "version": "v2.1.1"
     },
+    "friendsofphp/proxy-manager-lts": {
+        "version": "v1.0.3"
+    },
     "guzzlehttp/guzzle": {
         "version": "6.5.2"
     },
@@ -462,6 +465,9 @@
     },
     "symfony/yaml": {
         "version": "v5.0.4"
+    },
+    "thecodingmachine/safe": {
+        "version": "v1.3.3"
     },
     "twig/extra-bundle": {
         "version": "v3.0.3"
